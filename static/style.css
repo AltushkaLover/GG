@@ -1,0 +1,175 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #00ff88;
+    overflow: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 136, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(136, 0, 255, 0.1) 0%, transparent 50%);
+    animation: backgroundShift 10s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes backgroundShift {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(180deg); }
+}
+
+.cyber-container {
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid #00ff88;
+    border-radius: 15px;
+    padding: 40px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+    position: relative;
+}
+
+.cyber-title {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px #00ff88;
+    letter-spacing: 3px;
+    color: #00ff88;
+}
+
+.cyber-form {
+    margin-bottom: 25px;
+}
+
+.cyber-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #00ff88;
+}
+
+.cyber-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(0, 255, 136, 0.1);
+    border: 1px solid #00ff88;
+    border-radius: 8px;
+    color: #00ff88;
+    font-size: 1.1em;
+    font-family: 'Courier New', monospace;
+}
+
+.cyber-checkboxes {
+    display: grid;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.cyber-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.cyber-checkbox:hover {
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.cyber-checkbox input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #00ff88;
+    border-radius: 3px;
+    position: relative;
+}
+
+.cyber-checkbox input:checked + .checkmark {
+    background: #00ff88;
+}
+
+.cyber-checkbox input:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-weight: bold;
+}
+
+.cyber-btn {
+    width: 100%;
+    padding: 15px;
+    background: #00ff88;
+    border: none;
+    border-radius: 8px;
+    color: #000;
+    font-size: 1.2em;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+.cyber-btn:hover {
+    background: #ff0088;
+    color: white;
+}
+
+.copy-btn {
+    background: #ff0088;
+    color: white;
+    font-size: 1em;
+    padding: 12px;
+}
+
+.cyber-result {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(0, 255, 136, 0.05);
+    border: 1px solid #00ff88;
+    border-radius: 10px;
+    display: none;
+}
+
+.password-display {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ff0088;
+}
+
+.password-text {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #ff0088;
+    word-break: break-all;
+}
