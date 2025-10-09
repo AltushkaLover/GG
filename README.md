@@ -49,13 +49,22 @@ password-generator/
 ## 🎮 Как использовать
 
 1. **Выберите сложность** пароля из выпадающего списка
+<img width="769" height="91" alt="image" src="https://github.com/user-attachments/assets/c956d4ba-d18b-422b-a7f9-96ac4cc066c7" />
+
 2. **Укажите длину** (по умолчанию 12 символов)
+<img width="782" height="113" alt="image" src="https://github.com/user-attachments/assets/e1ec3ffe-6af5-4cc3-b65c-a4e9fdf7cc49" />
+
 3. **Для пользовательского режима** отметьте нужные опции:
    - ✅ Заглавные буквы (A-Z)
    - ✅ Цифры (0-9) 
    - ✅ Специальные символы (!@#$% и др.)
+<img width="764" height="566" alt="image" src="https://github.com/user-attachments/assets/ed63c8e8-b3a4-4d2a-a327-ec71bc0eb1cd" />
+
 4. **Нажмите "Сгенерировать пароль"**
+<img width="760" height="120" alt="image" src="https://github.com/user-attachments/assets/a433cb40-ed4f-4e91-a2ed-87465b03072c" />
+
 5. **Скопируйте** результат в буфер обмена
+<img width="757" height="160" alt="image" src="https://github.com/user-attachments/assets/f0cb57a2-e311-43fc-9698-11e45b1573e6" />
 
 ## 🔧 API
 
