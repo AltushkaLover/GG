@@ -4,230 +4,157 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор паролей</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        select, input[type="number"], button {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin: 10px 0;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .password-display {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 18px;
-            word-break: break-all;
-        }
-        .custom-options {
-            background-color: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            margin: 5px 0;
-        }
-        .checkbox-group input {
-            width: auto;
-            margin-right: 10px;
-        }
-        .batch-results {
-            margin-top: 20px;
-        }
-        .password-item {
-            background-color: #f8f9fa;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <h1>🔐 Генератор паролей</h1>
-
-        <div class="form-group">
-            <label for="complexity">Уровень сложности:</label>
-            <select id="complexity" onchange="toggleCustomOptions()">
-                <option value="easy">Простой (только буквы)</option>
-                <option value="medium" selected>Средний (буквы + цифры)</option>
-                <option value="hard">Сложный (все символы)</option>
-                <option value="custom">Пользовательский</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="length">Длина пароля:</label>
-            <input type="number" id="length" min="4" max="50" value="12">
-        </div>
-
-        <div id="customOptions" class="custom-options" style="display: none;">
-            <h3>Настройки пароля:</h3>
-            <div class="checkbox-group">
-                <input type="checkbox" id="uppercase" checked>
-                <label for="uppercase">Заглавные буквы (A-Z)</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="numbers" checked>
-                <label for="numbers">Цифры (0-9)</label>
-            </div>
-            <div class="checkbox-group">
-                <input type="checkbox" id="special">
-                <label for="special">Специальные символы (!@#$% и т.д.)</label>
-            </div>
-        </div>
-
-        <button onclick="generatePassword()">Сгенерировать пароль</button>
-        <button onclick="generateBatchPasswords()">Сгенерировать несколько паролей</button>
-
-        <div id="result" class="password-display" style="display: none;">
-            <strong>Ваш пароль:</strong>
-            <div id="passwordOutput"></div>
-            <small>Длина: <span id="passwordLength"></span> символов</small>
-            <button onclick="copyToClipboard()" style="margin-top: 10px;">Копировать</button>
-        </div>
-
-        <div id="batchResult" class="batch-results" style="display: none;">
-            <h3>Сгенерированные пароли:</h3>
-            <div id="batchPasswordsOutput"></div>
-            <button onclick="copyBatchToClipboard()">Копировать все</button>
+    <div class="header">
+        <div class="user-info">
+            Привет, <strong>{{ username }}</strong>!
+            <a href="{{ url_for('logout') }}" class="btn">Выйти</a>
         </div>
     </div>
 
+    <div class="container">
+        <h1>Генератор паролей</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="settings">
+            <div class="setting">
+                <label>Сложность пароля:</label>
+                <div class="complexity-buttons">
+                    <button type="button" class="complexity-btn active" data-complexity="simple">Простой</button>
+                    <button type="button" class="complexity-btn" data-complexity="medium">Средний</button>
+                    <button type="button" class="complexity-btn" data-complexity="strong">Сложный</button>
+                    <button type="button" class="complexity-btn" data-complexity="very_strong">Очень сложный</button>
+                </div>
+            </div>
+
+            <div class="setting">
+                <label for="length">Длина пароля:</label>
+                <input type="number" id="length" min="6" max="40" value="12">
+                <div class="length-info" id="length-info">Рекомендуемая длина: 6-20 символов</div>
+            </div>
+
+            <div class="setting">
+                <div class="complexity-info" id="complexity-info">
+                    <strong>Простой:</strong> только буквы (A-Z, a-z)
+                </div>
+            </div>
+        </div>
+
+        <div class="result">
+            <label>Ваш пароль:</label>
+            <input type="text" id="password" readonly>
+        </div>
+
+        <button onclick="generatePassword()">Сгенерировать пароль</button>
+    </div>
+
     <script>
-        function toggleCustomOptions() {
-            const complexity = document.getElementById('complexity').value;
-            const customOptions = document.getElementById('customOptions');
-            customOptions.style.display = complexity === 'custom' ? 'block' : 'none';
+        let currentComplexity = 'simple';
+
+        // Обработчики для кнопок сложности
+        document.querySelectorAll('.complexity-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Убираем активный класс у всех кнопок
+                document.querySelectorAll('.complexity-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                // Добавляем активный класс текущей кнопке
+                this.classList.add('active');
+                currentComplexity = this.dataset.complexity;
+                updateComplexityInfo();
+                updateLengthLimits();
+            });
+        });
+
+        function updateComplexityInfo() {
+            const info = document.getElementById('complexity-info');
+            switch(currentComplexity) {
+                case 'simple':
+                    info.innerHTML = '<strong>Простой:</strong> только буквы (A-Z, a-z)';
+                    break;
+                case 'medium':
+                    info.innerHTML = '<strong>Средний:</strong> буквы + цифры (A-Z, a-z, 0-9)';
+                    break;
+                case 'strong':
+                    info.innerHTML = '<strong>Сложный:</strong> буквы + цифры + специальные символы (!@#$%^&*)';
+                    break;
+                case 'very_strong':
+                    info.innerHTML = '<strong>Очень сложный:</strong> все символы + расширенный набор специальных символов';
+                    break;
+            }
+        }
+
+        function updateLengthLimits() {
+            const lengthInput = document.getElementById('length');
+            const lengthInfo = document.getElementById('length-info');
+
+            switch(currentComplexity) {
+                case 'simple':
+                    lengthInput.min = 6;
+                    lengthInput.max = 20;
+                    lengthInput.value = 8;
+                    lengthInfo.textContent = 'Рекомендуемая длина: 6-20 символов';
+                    break;
+                case 'medium':
+                    lengthInput.min = 8;
+                    lengthInput.max = 25;
+                    lengthInput.value = 12;
+                    lengthInfo.textContent = 'Рекомендуемая длина: 8-25 символов';
+                    break;
+                case 'strong':
+                    lengthInput.min = 10;
+                    lengthInput.max = 30;
+                    lengthInput.value = 16;
+                    lengthInfo.textContent = 'Рекомендуемая длина: 10-30 символов';
+                    break;
+                case 'very_strong':
+                    lengthInput.min = 12;
+                    lengthInput.max = 40;
+                    lengthInput.value = 20;
+                    lengthInfo.textContent = 'Рекомендуемая длина: 12-40 символов';
+                    break;
+            }
         }
 
         function generatePassword() {
-            const complexity = document.getElementById('complexity').value;
-            const length = parseInt(document.getElementById('length').value);
-
-            let data = { complexity, length };
-
-            if (complexity === 'custom') {
-                data.uppercase = document.getElementById('uppercase').checked;
-                data.numbers = document.getElementById('numbers').checked;
-                data.special = document.getElementById('special').checked;
-            }
+            const data = {
+                complexity: currentComplexity,
+                length: parseInt(document.getElementById('length').value)
+            };
 
             fetch('/generate', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('passwordOutput').textContent = data.password;
-                    document.getElementById('passwordLength').textContent = data.length;
-                    document.getElementById('result').style.display = 'block';
-                    document.getElementById('batchResult').style.display = 'none';
+                    document.getElementById('password').value = data.password;
                 } else {
                     alert('Ошибка: ' + data.error);
                 }
             })
             .catch(error => {
-                alert('Ошибка при генерации пароля');
-                console.error('Error:', error);
+                alert('Ошибка соединения');
             });
         }
 
-        function generateBatchPasswords() {
-            const complexity = document.getElementById('complexity').value;
-            const length = parseInt(document.getElementById('length').value);
-
-            let data = { complexity, length, count: 5 };
-
-            if (complexity === 'custom') {
-                data.uppercase = document.getElementById('uppercase').checked;
-                data.numbers = document.getElementById('numbers').checked;
-                data.special = document.getElementById('special').checked;
-            }
-
-            fetch('/batch-generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const output = document.getElementById('batchPasswordsOutput');
-                    output.innerHTML = data.passwords.map(pwd =>
-                        `<div class="password-item">${pwd}</div>`
-                    ).join('');
-                    document.getElementById('batchResult').style.display = 'block';
-                    document.getElementById('result').style.display = 'none';
-                } else {
-                    alert('Ошибка: ' + data.error);
-                }
-            })
-            .catch(error => {
-                alert('Ошибка при генерации паролей');
-                console.error('Error:', error);
-            });
-        }
-
-        function copyToClipboard() {
-            const password = document.getElementById('passwordOutput').textContent;
-            navigator.clipboard.writeText(password).then(() => {
-                alert('Пароль скопирован в буфер обмена!');
-            });
-        }
-
-        function copyBatchToClipboard() {
-            const passwords = Array.from(document.querySelectorAll('.password-item'))
-                .map(item => item.textContent)
-                .join('\n');
-            navigator.clipboard.writeText(passwords).then(() => {
-                alert('Все пароли скопированы в буфер обмена!');
-            });
-        }
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            updateComplexityInfo();
+            updateLengthLimits();
+            generatePassword();
+        });
     </script>
 </body>
 </html>
